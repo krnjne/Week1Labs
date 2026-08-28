@@ -1,5 +1,6 @@
-import WelcomeScreen from './screens/WelcomeScreen';
+import AddTasksScreen from './screens/AddTasksScreen';
 
 export default function App() {
-  return <WelcomeScreen />;
+return <AddTasksScreen />;
+
 }
