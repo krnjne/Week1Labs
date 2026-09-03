@@ -3,11 +3,39 @@ import { useEffect, useState } from 'react';
 import { Button, FlatList, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import TaskCard from '../components/TaskCard';
+
+const fallbackQuotes = [
+    'Believe in yourself and get it done!',
+    'Small steps every day lead to big results.',
+    'Progress is progress, no matter how small.',
+    'You are capable of more than you think.',
+];
+
 export default function AddTasksScreen() {
     const [taskText, setTaskText] = useState('');
     const [tasks, setTasks] = useState([]);
     const [errorMessage, setErrorMessage] = useState('');
     const [isLoaded, setIsLoaded] = useState(false);
+    const [quote, setQuote] = useState("Loading today's motivation...");
+    const [fallbackQuoteIndex, setFallbackQuoteIndex] = useState(0);
+
+    async function fetchQuote() {
+        try {
+            const response = await fetch('https://api.quotable.io/random');
+
+            if (!response.ok) {
+                throw new Error(`Quote request failed: ${response.status}`);
+            }
+
+            const data = await response.json();
+            setQuote(data.content);
+        } catch {
+            const nextIndex = (fallbackQuoteIndex + 1) % fallbackQuotes.length;
+
+            setFallbackQuoteIndex(nextIndex);
+            setQuote(fallbackQuotes[nextIndex]);
+        }
+    }
 
     useEffect(() => {
         async function loadTasks() {
@@ -43,6 +71,10 @@ export default function AddTasksScreen() {
         saveTasks();
     }, [tasks, isLoaded]);
 
+    useEffect(() => {
+        fetchQuote();
+    }, []);
+
 
     function handleAddTask() {
         if (taskText.trim() === '') {
@@ -65,6 +97,8 @@ export default function AddTasksScreen() {
     }
     return (
         <View style={styles.container}>
+            <Text style={styles.quote}>💬 {quote}</Text>
+            <Button title="New Quote" onPress={fetchQuote} />
             <Text style={styles.heading}>Add a Task</Text>
             <TextInput style={styles.input} placeholder="What do you need to do?" value={taskText} onChangeText={setTaskText} />
             {errorMessage && <Text style={styles.error}>{errorMessage}</Text>}
@@ -92,4 +126,5 @@ const styles = StyleSheet.create({
     empty: { textAlign: 'center', color: '#6B7280', marginTop: 24 },
     separator: { height: 8 },
     celebration: { fontSize: 18, color: '#10B981', marginTop: 16, textAlign: 'center' },
+    quote: { fontStyle: 'italic', color: '#6B7280', marginBottom: 16, textAlign: 'center'},
 });
