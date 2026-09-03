@@ -95,6 +95,10 @@ export default function AddTasksScreen() {
             tasks.map((t) => t.id === id ? { ...t, done: !t.done } : t)
         );
     }
+
+    function handleDeleteTask(id) {
+        setTasks(tasks.filter((t) => t.id !== id));
+    }
     return (
         <View style={styles.container}>
             <Text style={styles.quote}>💬 {quote}</Text>
@@ -108,7 +112,8 @@ export default function AddTasksScreen() {
             <FlatList data={tasks} 
                 keyExtractor={(item) => item.id} 
                 renderItem={({ item }) => <TaskCard title={item.title} done={item.done}
-                onToggle ={() => handleToggleTask(item.id)} />}
+                onToggle ={() => handleToggleTask(item.id)}
+                onDelete={() => handleDeleteTask(item.id)}/>}
                 ListEmptyComponent={() => <Text>No tasks yet. Add one above!</Text>}
                 ItemSeparatorComponent={() => <View style={{ height: 1, backgroundColor: '#D8DEE9', marginVertical: 8 }} />}
                 style={styles.list}
