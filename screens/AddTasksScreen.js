@@ -6,6 +6,7 @@ import TaskCard from '../components/TaskCard';
 export default function AddTasksScreen() {
     const [taskText, setTaskText] = useState('');
     const [tasks, setTasks] = useState([]);
+
     function handleAddTask() {
         if (taskText.trim() === '') return;
 
@@ -13,6 +14,12 @@ export default function AddTasksScreen() {
 
         setTasks([...tasks, newTask]);
         setTaskText('');
+    }
+
+    function handleToggleTask(id) {
+        setTasks (
+            tasks.map((t) => t.id === id ? { ...t, done: !t.done } : t)
+        );
     }
     return (
         <View style={styles.container}>
@@ -22,7 +29,10 @@ export default function AddTasksScreen() {
             <Text>You have {tasks.length} task(s)</Text>
             <FlatList data={tasks} 
                 keyExtractor={(item) => item.id} 
-                renderItem={({ item }) => <TaskCard title={item.title} done={item.done} />}
+                renderItem={({ item }) => <TaskCard title={item.title} done={item.done}
+                onToggle ={() => handleToggleTask(item.id)} />}
+                ListEmptyComponent={() => <Text>No tasks yet. Add one above!</Text>}
+                ItemSeparatorComponent={() => <View style={{ height: 1, backgroundColor: '#D8DEE9', marginVertical: 8 }} />}
                 style={styles.list}
             />
         </View>
@@ -34,4 +44,6 @@ const styles = StyleSheet.create({
     heading: { fontSize: 24, fontWeight: 'bold', marginBottom: 16 },
     input: { borderWidth: 1, borderColor: '#D8DEE9', borderRadius: 8, padding: 10, marginBottom: 10 },
     list: { marginTop: 16 },
+    empty: { textAlign: 'center', color: '#6B7280', marginTop: 24 },
+    separator: { height: 8 },
 });
