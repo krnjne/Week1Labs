@@ -13,7 +13,7 @@ export default function WelcomeScreen({ navigation })  {
             </View>
 
             <View style={styles.footer}>
-                <Button title="Check on tasks i guess" onPress={() => navigation.navigate('AddTasks')}/>
+                <Button title="Continue" onPress={() => navigation.navigate('Login')} />
             </View>
         </View>
     );
